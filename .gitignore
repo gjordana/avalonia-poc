@@ -1,0 +1,11 @@
+bin/
+obj/
+publish/
+*.db
+*.db-shm
+*.db-wal
+*.user
+.vs/
+.idea/
+*.DotSettings.user
+design_time.db

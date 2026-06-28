@@ -1,0 +1,131 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="TodoApp.App"
+             RequestedThemeVariant="Light">
+
+    <Application.Resources>
+        <FontFamily x:Key="FontAwesome">avares://TodoApp/Assets/Fonts/fa-solid-900.ttf#Font Awesome 6 Free Solid</FontFamily>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <!-- TextBox: white background -->
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!-- btn-warning (yellow/edit) -->
+        <Style Selector="Button.btn-warning">
+            <Setter Property="Background" Value="#E8A317"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.btn-warning:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#D4940F"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.btn-warning:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#C0860D"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- btn-danger (red/delete) -->
+        <Style Selector="Button.btn-danger">
+            <Setter Property="Background" Value="#DC3545"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.btn-danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#C82333"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.btn-danger:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#B21F2D"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- btn-info (teal/volver) -->
+        <Style Selector="Button.btn-info">
+            <Setter Property="Background" Value="#17A2B8"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.btn-info:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#138496"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.btn-info:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#10707F"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- btn-success (green/guardar) -->
+        <Style Selector="Button.btn-success">
+            <Setter Property="Background" Value="#28A745"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.btn-success:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#218838"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.btn-success:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#1E7E34"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- btn-outline-warning (Nuevo button) -->
+        <Style Selector="Button.btn-outline-warning">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#E8A317"/>
+            <Setter Property="BorderBrush" Value="#E8A317"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.btn-outline-warning:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#E8A317"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E8A317"/>
+        </Style>
+        <Style Selector="Button.btn-outline-warning:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#D4940F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D4940F"/>
+        </Style>
+
+        <!-- btn-page (pagination) -->
+        <Style Selector="Button.btn-page">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.btn-page:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#F0F0F0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        </Style>
+        <Style Selector="Button.btn-page:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+    </Application.Styles>
+</Application>

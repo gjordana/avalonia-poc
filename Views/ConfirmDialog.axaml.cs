@@ -1,0 +1,20 @@
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+
+namespace TodoApp.Views;
+
+public partial class ConfirmDialog : Window
+{
+    public ConfirmDialog() : this("Confirmar", "¿Está seguro?") { }
+
+    public ConfirmDialog(string title, string message)
+    {
+        InitializeComponent();
+        Title = title;
+        TitleText.Text = title;
+        MessageText.Text = message;
+    }
+
+    private void OnConfirm(object? sender, RoutedEventArgs e) => Close(true);
+    private void OnCancel(object? sender, RoutedEventArgs e) => Close(false);
+}

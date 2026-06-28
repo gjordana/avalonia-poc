@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="TodoApp.Views.EditTodoWindow"
+        Title="Edición de Tarea"
+        Width="620" Height="450"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="White">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Margin="28,24">
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,12">
+            <TextBlock Text="&#xf013;" FontFamily="{StaticResource FontAwesome}"
+                       FontSize="22" Foreground="#333333" VerticalAlignment="Center"/>
+            <TextBlock x:Name="HeaderText" Text="Edición de Tarea"
+                       FontSize="24" FontWeight="Bold" VerticalAlignment="Center"
+                       Foreground="#333333"/>
+        </StackPanel>
+
+        <!-- Top separator -->
+        <Border Grid.Row="1" Height="2" Background="#17A2B8" Margin="0,0,0,20"/>
+
+        <!-- Form -->
+        <ScrollViewer Grid.Row="2">
+            <StackPanel Spacing="20" Margin="60,0">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Título" FontWeight="SemiBold" FontSize="14"
+                               Foreground="#333333"/>
+                    <TextBox x:Name="TitleBox"
+                             BorderBrush="#CCCCCC" BorderThickness="1"
+                             CornerRadius="3" Padding="10,8" FontSize="14"/>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Descripción" FontWeight="SemiBold" FontSize="14"
+                               Foreground="#333333"/>
+                    <TextBox x:Name="TextBox" AcceptsReturn="True" MinHeight="80"
+                             BorderBrush="#CCCCCC" BorderThickness="1"
+                             CornerRadius="3" Padding="10,8" FontSize="14"/>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Estado" FontWeight="SemiBold" FontSize="14"
+                               Foreground="#333333"/>
+                    <ComboBox x:Name="StatusCombo" Width="280" HorizontalAlignment="Left"
+                              FontSize="14"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Bottom separator -->
+        <Border Grid.Row="3" Height="1" Background="#EEEEEE" Margin="0,16,0,16"/>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="12"
+                    HorizontalAlignment="Right">
+            <Button Click="OnCancel"
+                    Classes="btn-info"
+                    ToolTip.Tip="Volver sin guardar"
+                    FontWeight="SemiBold" Padding="24,10" FontSize="14">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="&#xf060;" FontFamily="{StaticResource FontAwesome}"
+                               FontSize="13" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="Volver" Foreground="White" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Click="OnSave"
+                    Classes="btn-success"
+                    ToolTip.Tip="Guardar cambios"
+                    FontWeight="SemiBold" Padding="24,10" FontSize="14">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="&#xf0c7;" FontFamily="{StaticResource FontAwesome}"
+                               FontSize="13" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="Guardar" Foreground="White" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

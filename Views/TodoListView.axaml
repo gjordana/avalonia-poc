@@ -1,0 +1,169 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TodoApp.ViewModels"
+             x:Class="TodoApp.Views.TodoListView"
+             x:DataType="vm:MainViewModel"
+             Background="White">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" Margin="24,20">
+
+        <!-- Alert Banner -->
+        <Border Grid.Row="0"
+                Background="#D4EDDA" BorderBrush="#C3E6CB" BorderThickness="1"
+                CornerRadius="4" Padding="16,12" Margin="0,0,0,16"
+                IsVisible="{Binding IsAlertVisible}">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="&#xf058;" FontFamily="{StaticResource FontAwesome}"
+                           FontSize="16" Foreground="#155724" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding AlertMessage}"
+                           Foreground="#155724" FontSize="14" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Header -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
+                <TextBlock Text="&#xf013;" FontFamily="{StaticResource FontAwesome}"
+                           FontSize="22" Foreground="#333333" VerticalAlignment="Center"/>
+                <TextBlock Text="Tareas" FontSize="24" FontWeight="Bold"
+                           VerticalAlignment="Center" Foreground="#333333"/>
+            </StackPanel>
+            <Button Grid.Column="2" Click="OnNew"
+                    Classes="btn-outline-warning"
+                    ToolTip.Tip="Crear nueva tarea"
+                    FontWeight="SemiBold" Padding="20,8" FontSize="14">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="&#xf067;" FontFamily="{StaticResource FontAwesome}"
+                               FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Text="Nuevo" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Toolbar: Page size + Search -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,*,Auto" Margin="0,0,0,16">
+            <TextBlock Text="Mostrar" VerticalAlignment="Center" Grid.Column="0"
+                       Foreground="#555555" FontSize="13"/>
+            <ComboBox ItemsSource="{Binding PageSizeOptions}"
+                      SelectedItem="{Binding PageSize}"
+                      Margin="8,0" Width="75"
+                      VerticalAlignment="Center" Grid.Column="1"
+                      FontSize="13"/>
+            <TextBlock Text="registros por página" VerticalAlignment="Center" Grid.Column="2"
+                       Foreground="#555555" FontSize="13"/>
+            <TextBox PlaceholderText="Buscar..."
+                     Text="{Binding SearchText}"
+                     Width="220"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Right"
+                     Grid.Column="4"
+                     FontSize="13"
+                     BorderBrush="#CCCCCC"
+                     BorderThickness="1"
+                     CornerRadius="3"
+                     Padding="8,6"/>
+        </Grid>
+
+        <!-- Table Header -->
+        <Border Grid.Row="3" BorderBrush="#DDDDDD" BorderThickness="0,0,0,2" Padding="12,10">
+            <Grid ColumnDefinitions="2*,2*,*,100">
+                <TextBlock Grid.Column="0" Text="Título" FontWeight="Bold" FontSize="14"
+                           Foreground="#333333"/>
+                <TextBlock Grid.Column="1" Text="Descripción" FontWeight="Bold" FontSize="14"
+                           Foreground="#333333"/>
+                <TextBlock Grid.Column="2" Text="Estado" FontWeight="Bold" FontSize="14"
+                           Foreground="#333333"/>
+                <TextBlock Grid.Column="3" Text="" FontSize="14"/>
+            </Grid>
+        </Border>
+
+        <!-- Table Rows -->
+        <ScrollViewer Grid.Row="4">
+            <ItemsControl ItemsSource="{Binding Todos}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TodoItemViewModel">
+                        <Border BorderBrush="#EEEEEE" BorderThickness="0,0,0,1" Padding="12,10">
+                            <Grid ColumnDefinitions="2*,2*,*,100">
+                                <TextBlock Grid.Column="0" Text="{Binding Title}"
+                                           FontSize="14" Foreground="#333333"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Text}"
+                                           FontSize="14" Foreground="#777777"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <!-- Status Pill -->
+                                <Border Grid.Column="2"
+                                        CornerRadius="12"
+                                        Padding="12,4"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Background="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusBackgroundConverter}}"
+                                        BorderBrush="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusBorderConverter}}"
+                                        BorderThickness="1">
+                                    <TextBlock Text="{Binding StatusDisplay}"
+                                               FontSize="12" FontWeight="SemiBold"
+                                               Foreground="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusForegroundConverter}}"/>
+                                </Border>
+                                <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                    <Button Click="OnEdit" Tag="{Binding}"
+                                            Classes="btn-warning"
+                                            ToolTip.Tip="Editar tarea"
+                                            Padding="10,6">
+                                        <TextBlock Text="&#xf044;" FontFamily="{StaticResource FontAwesome}"
+                                                   FontSize="14" Foreground="White"/>
+                                    </Button>
+                                    <Button Click="OnDelete" Tag="{Binding}"
+                                            Classes="btn-danger"
+                                            ToolTip.Tip="Eliminar tarea"
+                                            Padding="10,6">
+                                        <TextBlock Text="&#xf2ed;" FontFamily="{StaticResource FontAwesome}"
+                                                   FontSize="14" Foreground="White"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Footer: Pagination -->
+        <Grid Grid.Row="5" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
+            <TextBlock Text="{Binding PageInfo}" VerticalAlignment="Center" Grid.Column="0"
+                       Foreground="#888888" FontSize="13"/>
+            <StackPanel Orientation="Horizontal" Spacing="8" Grid.Column="1">
+                <Button Command="{Binding PreviousPageCommand}"
+                        Classes="btn-page"
+                        ToolTip.Tip="Página anterior"
+                        Padding="12,6" FontSize="13">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="&#xf053;" FontFamily="{StaticResource FontAwesome}"
+                                   FontSize="10" VerticalAlignment="Center"/>
+                        <TextBlock Text="Anterior" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <TextBlock VerticalAlignment="Center" Foreground="#555555" FontSize="13">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Página {0} de {1}">
+                            <Binding Path="CurrentPage"/>
+                            <Binding Path="TotalPages"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <Button Command="{Binding NextPageCommand}"
+                        Classes="btn-page"
+                        ToolTip.Tip="Página siguiente"
+                        Padding="12,6" FontSize="13">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="Siguiente" VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xf054;" FontFamily="{StaticResource FontAwesome}"
+                                   FontSize="10" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
