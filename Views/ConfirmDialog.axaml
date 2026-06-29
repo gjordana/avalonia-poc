@@ -5,7 +5,7 @@
         Width="450" Height="220"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
-        Background="White">
+        Background="{DynamicResource AppBackground}">
 
     <Grid RowDefinitions="*,Auto" Margin="28,24">
         <StackPanel Grid.Row="0" Spacing="12" VerticalAlignment="Center">
@@ -13,10 +13,10 @@
                 <TextBlock Text="&#xf071;" FontFamily="{StaticResource FontAwesome}"
                            FontSize="22" Foreground="#E8A317" VerticalAlignment="Center"/>
                 <TextBlock x:Name="TitleText" FontSize="18" FontWeight="Bold"
-                           Foreground="#333333" VerticalAlignment="Center"/>
+                           Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
             </StackPanel>
             <TextBlock x:Name="MessageText" FontSize="14" TextWrapping="Wrap"
-                       Foreground="#555555" Margin="32,0,0,0"/>
+                       Foreground="{DynamicResource TextSecondary}" Margin="32,0,0,0"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12"

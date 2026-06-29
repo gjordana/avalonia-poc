@@ -4,21 +4,68 @@
              RequestedThemeVariant="Light">
 
     <Application.Resources>
-        <FontFamily x:Key="FontAwesome">avares://TodoApp/Assets/Fonts/fa-solid-900.ttf#Font Awesome 6 Free Solid</FontFamily>
+        <ResourceDictionary>
+            <FontFamily x:Key="FontAwesome">avares://TodoApp/Assets/Fonts/fa-solid-900.ttf#Font Awesome 6 Free Solid</FontFamily>
+
+            <ResourceDictionary.ThemeDictionaries>
+            <ResourceDictionary x:Key="Light">
+                <SolidColorBrush x:Key="AppBackground" Color="White"/>
+                <SolidColorBrush x:Key="TextPrimary" Color="#333333"/>
+                <SolidColorBrush x:Key="TextSecondary" Color="#555555"/>
+                <SolidColorBrush x:Key="TextMuted" Color="#777777"/>
+                <SolidColorBrush x:Key="TextFooter" Color="#888888"/>
+                <SolidColorBrush x:Key="BorderLight" Color="#EEEEEE"/>
+                <SolidColorBrush x:Key="BorderMedium" Color="#DDDDDD"/>
+                <SolidColorBrush x:Key="BorderInput" Color="#CCCCCC"/>
+                <SolidColorBrush x:Key="InputBackground" Color="White"/>
+                <SolidColorBrush x:Key="PageBtnBackground" Color="White"/>
+                <SolidColorBrush x:Key="PageBtnHover" Color="#F0F0F0"/>
+                <SolidColorBrush x:Key="PageBtnPressed" Color="#E0E0E0"/>
+                <SolidColorBrush x:Key="HeaderHover" Color="#F5F5F5"/>
+                <SolidColorBrush x:Key="HeaderPressed" Color="#EBEBEB"/>
+                <SolidColorBrush x:Key="AlertBackground" Color="#D4EDDA"/>
+                <SolidColorBrush x:Key="AlertBorder" Color="#C3E6CB"/>
+                <SolidColorBrush x:Key="AlertForeground" Color="#155724"/>
+                <SolidColorBrush x:Key="ThemeToggleBarBackground" Color="#F8F9FA"/>
+                <SolidColorBrush x:Key="ThemeToggleText" Color="#555555"/>
+            </ResourceDictionary>
+            <ResourceDictionary x:Key="Dark">
+                <SolidColorBrush x:Key="AppBackground" Color="#1E1E2E"/>
+                <SolidColorBrush x:Key="TextPrimary" Color="#CDD6F4"/>
+                <SolidColorBrush x:Key="TextSecondary" Color="#BAC2DE"/>
+                <SolidColorBrush x:Key="TextMuted" Color="#A6ADC8"/>
+                <SolidColorBrush x:Key="TextFooter" Color="#7F849C"/>
+                <SolidColorBrush x:Key="BorderLight" Color="#313244"/>
+                <SolidColorBrush x:Key="BorderMedium" Color="#45475A"/>
+                <SolidColorBrush x:Key="BorderInput" Color="#585B70"/>
+                <SolidColorBrush x:Key="InputBackground" Color="#313244"/>
+                <SolidColorBrush x:Key="PageBtnBackground" Color="#313244"/>
+                <SolidColorBrush x:Key="PageBtnHover" Color="#45475A"/>
+                <SolidColorBrush x:Key="PageBtnPressed" Color="#585B70"/>
+                <SolidColorBrush x:Key="HeaderHover" Color="#313244"/>
+                <SolidColorBrush x:Key="HeaderPressed" Color="#45475A"/>
+                <SolidColorBrush x:Key="AlertBackground" Color="#1E3A2F"/>
+                <SolidColorBrush x:Key="AlertBorder" Color="#2D5A45"/>
+                <SolidColorBrush x:Key="AlertForeground" Color="#A6E3A1"/>
+                <SolidColorBrush x:Key="ThemeToggleBarBackground" Color="#181825"/>
+                <SolidColorBrush x:Key="ThemeToggleText" Color="#BAC2DE"/>
+            </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
         <FluentTheme />
 
-        <!-- TextBox: white background -->
+        <!-- TextBox: theme-aware background -->
         <Style Selector="TextBox">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
         </Style>
         <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
         </Style>
         <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
         </Style>
 
         <!-- btn-warning (yellow/edit) -->
@@ -111,21 +158,35 @@
 
         <!-- btn-page (pagination) -->
         <Style Selector="Button.btn-page">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="#333333"/>
-            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="Background" Value="{DynamicResource PageBtnBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderMedium}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="3"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style Selector="Button.btn-page:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#F0F0F0"/>
-            <Setter Property="Foreground" Value="#333333"/>
-            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="Background" Value="{DynamicResource PageBtnHover}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderInput}"/>
         </Style>
         <Style Selector="Button.btn-page:pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#E0E0E0"/>
-            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Background" Value="{DynamicResource PageBtnPressed}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+        </Style>
+        <!-- btn-header (sortable column headers) -->
+        <Style Selector="Button.btn-header">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12,10"/>
+        </Style>
+        <Style Selector="Button.btn-header:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource HeaderHover}"/>
+        </Style>
+        <Style Selector="Button.btn-header:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource HeaderPressed}"/>
         </Style>
     </Application.Styles>
 </Application>

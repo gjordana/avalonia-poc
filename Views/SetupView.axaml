@@ -1,15 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="TodoApp.Views.SetupView"
-             Background="White">
+             Background="{DynamicResource AppBackground}">
     <Border Padding="40" VerticalAlignment="Center" HorizontalAlignment="Center">
         <StackPanel Spacing="24" Width="500">
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
                 <TextBlock Text="&#xf013;" FontFamily="{StaticResource FontAwesome}"
-                           FontSize="24" Foreground="#333333" VerticalAlignment="Center"/>
+                           FontSize="24" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
                 <TextBlock Text="Configuración Inicial"
                            FontSize="26" FontWeight="Bold"
-                           HorizontalAlignment="Center" Foreground="#333333"/>
+                           HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>
 
             <Border Height="2" Background="#17A2B8"/>
@@ -17,16 +17,16 @@
             <TextBlock Text="No se ha configurado una base de datos SQLite. Por favor seleccione la ubicación donde se creará el archivo de base de datos."
                        TextWrapping="Wrap"
                        HorizontalAlignment="Center"
-                       Foreground="#555555" FontSize="14"
+                       Foreground="{DynamicResource TextSecondary}" FontSize="14"
                        TextAlignment="Center"/>
 
             <StackPanel Spacing="6">
                 <TextBlock Text="Ubicación de la base de datos" FontWeight="SemiBold"
-                           FontSize="14" Foreground="#333333"/>
+                           FontSize="14" Foreground="{DynamicResource TextPrimary}"/>
                 <TextBox x:Name="PathTextBox"
                          PlaceholderText="Ruta del archivo SQLite (.db)"
                          IsReadOnly="True"
-                         BorderBrush="#CCCCCC" BorderThickness="1"
+                         BorderBrush="{DynamicResource BorderInput}" BorderThickness="1"
                          CornerRadius="3" Padding="10,8" FontSize="14"/>
             </StackPanel>
 
@@ -44,7 +44,7 @@
                 </Button>
             </StackPanel>
 
-            <Border Height="1" Background="#EEEEEE"/>
+            <Border Height="1" Background="{DynamicResource BorderLight}"/>
 
             <Button Click="OnCreate"
                     HorizontalAlignment="Center"

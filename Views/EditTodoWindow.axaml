@@ -5,17 +5,17 @@
         Width="620" Height="450"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
-        Background="White">
+        Background="{DynamicResource AppBackground}">
 
     <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Margin="28,24">
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,12">
             <TextBlock Text="&#xf013;" FontFamily="{StaticResource FontAwesome}"
-                       FontSize="22" Foreground="#333333" VerticalAlignment="Center"/>
+                       FontSize="22" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
             <TextBlock x:Name="HeaderText" Text="Edición de Tarea"
                        FontSize="24" FontWeight="Bold" VerticalAlignment="Center"
-                       Foreground="#333333"/>
+                       Foreground="{DynamicResource TextPrimary}"/>
         </StackPanel>
 
         <!-- Top separator -->
@@ -26,23 +26,23 @@
             <StackPanel Spacing="20" Margin="60,0">
                 <StackPanel Spacing="6">
                     <TextBlock Text="Título" FontWeight="SemiBold" FontSize="14"
-                               Foreground="#333333"/>
+                               Foreground="{DynamicResource TextPrimary}"/>
                     <TextBox x:Name="TitleBox"
-                             BorderBrush="#CCCCCC" BorderThickness="1"
+                             BorderBrush="{DynamicResource BorderInput}" BorderThickness="1"
                              CornerRadius="3" Padding="10,8" FontSize="14"/>
                 </StackPanel>
 
                 <StackPanel Spacing="6">
                     <TextBlock Text="Descripción" FontWeight="SemiBold" FontSize="14"
-                               Foreground="#333333"/>
+                               Foreground="{DynamicResource TextPrimary}"/>
                     <TextBox x:Name="TextBox" AcceptsReturn="True" MinHeight="80"
-                             BorderBrush="#CCCCCC" BorderThickness="1"
+                             BorderBrush="{DynamicResource BorderInput}" BorderThickness="1"
                              CornerRadius="3" Padding="10,8" FontSize="14"/>
                 </StackPanel>
 
                 <StackPanel Spacing="6">
                     <TextBlock Text="Estado" FontWeight="SemiBold" FontSize="14"
-                               Foreground="#333333"/>
+                               Foreground="{DynamicResource TextPrimary}"/>
                     <ComboBox x:Name="StatusCombo" Width="280" HorizontalAlignment="Left"
                               FontSize="14"/>
                 </StackPanel>
@@ -50,7 +50,7 @@
         </ScrollViewer>
 
         <!-- Bottom separator -->
-        <Border Grid.Row="3" Height="1" Background="#EEEEEE" Margin="0,16,0,16"/>
+        <Border Grid.Row="3" Height="1" Background="{DynamicResource BorderLight}" Margin="0,16,0,16"/>
 
         <!-- Buttons -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="12"

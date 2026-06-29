@@ -1,8 +1,11 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Platform;
+using Avalonia.Styling;
 using TodoApp.Services;
 using TodoApp.ViewModels;
 using TodoApp.Views;
@@ -73,6 +76,13 @@ public partial class MainWindow : Window
 
     [DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
     private static extern void objc_msgSend_Void(IntPtr receiver, IntPtr selector, IntPtr arg1);
+
+    private void OnThemeToggleChanged(object? sender, RoutedEventArgs e)
+    {
+        if (Application.Current == null) return;
+        var isDark = ThemeToggle.IsChecked == true;
+        Application.Current.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+    }
 
     private void LoadContent()
     {

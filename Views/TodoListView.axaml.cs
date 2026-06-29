@@ -1,5 +1,7 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using TodoApp.ViewModels;
 
 namespace TodoApp.Views;
@@ -60,6 +62,34 @@ public partial class TodoListView : UserControl
         if (result)
         {
             ViewModel.DeleteTodo(todo);
+        }
+    }
+
+    private async void OnExport(object? sender, RoutedEventArgs e)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null) return;
+
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Exportar tareas a Excel",
+            SuggestedFileName = $"Tareas_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx",
+            FileTypeChoices =
+            [
+                new FilePickerFileType("Excel") { Patterns = ["*.xlsx"] }
+            ]
+        });
+
+        if (file == null) return;
+
+        try
+        {
+            ViewModel.ExportToExcel(file.Path.LocalPath);
+            ViewModel.ShowAlert("Exportado a Excel correctamente");
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ShowAlert($"Error al exportar: {ex.Message}");
         }
     }
 }
