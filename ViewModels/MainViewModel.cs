@@ -19,6 +19,8 @@ public partial class MainViewModel : ObservableObject
     private List<TodoItemViewModel> _allTodos = new();
 
     public ObservableCollection<TodoItemViewModel> Todos { get; } = new();
+    public ObservableCollection<TodoItemViewModel> LeftTodos { get; } = new();
+    public ObservableCollection<TodoItemViewModel> RightTodos { get; } = new();
 
     [ObservableProperty]
     private TodoItemViewModel? _selectedTodo;
@@ -44,8 +46,16 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isAlertVisible;
 
+    [ObservableProperty]
+    private bool _isSplitView;
+
     private string _sortColumn = string.Empty;
     private bool _sortAscending = true;
+
+    private string _leftSortColumn = string.Empty;
+    private bool _leftSortAscending = true;
+    private string _rightSortColumn = string.Empty;
+    private bool _rightSortAscending = true;
 
     public int[] PageSizeOptions { get; } = [10, 25, 50, 100];
 
@@ -62,7 +72,15 @@ public partial class MainViewModel : ObservableObject
         ApplyFilter();
     }
 
-    partial void OnSearchTextChanged(string value) => ApplyFilter();
+    partial void OnSearchTextChanged(string value)
+    {
+        ApplyFilter();
+        if (IsSplitView)
+        {
+            RefreshSplitSide(LeftTodos, _leftSortColumn, _leftSortAscending);
+            RefreshSplitSide(RightTodos, _rightSortColumn, _rightSortAscending);
+        }
+    }
 
     partial void OnPageSizeChanged(int value)
     {
@@ -70,6 +88,16 @@ public partial class MainViewModel : ObservableObject
         ApplyFilter();
     }
 
+    partial void OnIsSplitViewChanged(bool value)
+    {
+        if (value)
+        {
+            RefreshSplitSide(LeftTodos, _leftSortColumn, _leftSortAscending);
+            RefreshSplitSide(RightTodos, _rightSortColumn, _rightSortAscending);
+        }
+    }
+
+    // Single-grid sort (used by the main DataGrid)
     [RelayCommand]
     private void SortBy(string column)
     {
@@ -83,10 +111,66 @@ public partial class MainViewModel : ObservableObject
         ApplyFilter();
     }
 
+    // Split-view sort — each side is independent
+    public void SortSplitGrid(bool isLeft, string column)
+    {
+        if (isLeft)
+        {
+            if (_leftSortColumn == column) _leftSortAscending = !_leftSortAscending;
+            else { _leftSortColumn = column; _leftSortAscending = true; }
+            RefreshSplitSide(LeftTodos, _leftSortColumn, _leftSortAscending);
+            OnPropertyChanged(nameof(LeftTitleHeader));
+            OnPropertyChanged(nameof(LeftTextHeader));
+            OnPropertyChanged(nameof(LeftStatusHeader));
+        }
+        else
+        {
+            if (_rightSortColumn == column) _rightSortAscending = !_rightSortAscending;
+            else { _rightSortColumn = column; _rightSortAscending = true; }
+            RefreshSplitSide(RightTodos, _rightSortColumn, _rightSortAscending);
+            OnPropertyChanged(nameof(RightTitleHeader));
+            OnPropertyChanged(nameof(RightTextHeader));
+            OnPropertyChanged(nameof(RightStatusHeader));
+        }
+    }
+
+    private void RefreshSplitSide(ObservableCollection<TodoItemViewModel> target, string sortColumn, bool ascending)
+    {
+        var sorted = sortColumn switch
+        {
+            "Title"  => ascending ? GetFilteredAll().OrderBy(t => t.Title)  : GetFilteredAll().OrderByDescending(t => t.Title),
+            "Text"   => ascending ? GetFilteredAll().OrderBy(t => t.Text)   : GetFilteredAll().OrderByDescending(t => t.Text),
+            "Status" => ascending ? GetFilteredAll().OrderBy(t => t.Status) : GetFilteredAll().OrderByDescending(t => t.Status),
+            _        => GetFilteredAll().OrderBy(t => t.SortOrder)
+        };
+        target.Clear();
+        foreach (var item in sorted) target.Add(item);
+    }
+
+    private IEnumerable<TodoItemViewModel> GetFilteredAll()
+    {
+        var filtered = _allTodos.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var search = SearchText.Trim();
+            filtered = filtered.Where(t =>
+                t.Title.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                t.Text.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                t.StatusDisplay.Contains(search, StringComparison.OrdinalIgnoreCase));
+        }
+        return filtered;
+    }
+
     public string GetSortIndicator(string column)
     {
         if (_sortColumn != column) return " ↕";
         return _sortAscending ? " ↑" : " ↓";
+    }
+
+    private string SplitIndicator(string sortColumn, bool ascending, string column)
+    {
+        if (sortColumn != column) return " ↕";
+        return ascending ? " ↑" : " ↓";
     }
 
     private void ApplyFilter()
@@ -104,24 +188,19 @@ public partial class MainViewModel : ObservableObject
 
         filtered = _sortColumn switch
         {
-            "Title" => _sortAscending ? filtered.OrderBy(t => t.Title) : filtered.OrderByDescending(t => t.Title),
-            "Text" => _sortAscending ? filtered.OrderBy(t => t.Text) : filtered.OrderByDescending(t => t.Text),
+            "Title"  => _sortAscending ? filtered.OrderBy(t => t.Title)  : filtered.OrderByDescending(t => t.Title),
+            "Text"   => _sortAscending ? filtered.OrderBy(t => t.Text)   : filtered.OrderByDescending(t => t.Text),
             "Status" => _sortAscending ? filtered.OrderBy(t => t.Status) : filtered.OrderByDescending(t => t.Status),
-            _ => filtered.OrderBy(t => t.SortOrder)
+            _        => filtered.OrderBy(t => t.SortOrder)
         };
 
         var filteredList = filtered.ToList();
         TotalPages = Math.Max(1, (int)Math.Ceiling(filteredList.Count / (double)PageSize));
         if (CurrentPage > TotalPages) CurrentPage = TotalPages;
 
-        var paged = filteredList
-            .Skip((CurrentPage - 1) * PageSize)
-            .Take(PageSize)
-            .ToList();
-
+        var paged = filteredList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
         Todos.Clear();
-        foreach (var item in paged)
-            Todos.Add(item);
+        foreach (var item in paged) Todos.Add(item);
 
         var from = filteredList.Count > 0 ? ((CurrentPage - 1) * PageSize) + 1 : 0;
         var to = Math.Min(CurrentPage * PageSize, filteredList.Count);
@@ -132,9 +211,18 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(StatusHeader));
     }
 
-    public string TitleHeader => "Título" + GetSortIndicator("Title");
-    public string TextHeader => "Descripción" + GetSortIndicator("Text");
-    public string StatusHeader => "Estado" + GetSortIndicator("Status");
+    // Single-grid headers
+    public string TitleHeader  => "Título"      + GetSortIndicator("Title");
+    public string TextHeader   => "Descripción" + GetSortIndicator("Text");
+    public string StatusHeader => "Estado"      + GetSortIndicator("Status");
+
+    // Split-view headers (independent per side)
+    public string LeftTitleHeader  => "Título"      + SplitIndicator(_leftSortColumn,  _leftSortAscending,  "Title");
+    public string LeftTextHeader   => "Descripción" + SplitIndicator(_leftSortColumn,  _leftSortAscending,  "Text");
+    public string LeftStatusHeader => "Estado"      + SplitIndicator(_leftSortColumn,  _leftSortAscending,  "Status");
+    public string RightTitleHeader  => "Título"      + SplitIndicator(_rightSortColumn, _rightSortAscending, "Title");
+    public string RightTextHeader   => "Descripción" + SplitIndicator(_rightSortColumn, _rightSortAscending, "Text");
+    public string RightStatusHeader => "Estado"      + SplitIndicator(_rightSortColumn, _rightSortAscending, "Status");
 
     public string CurrentSortColumn => _sortColumn;
     public bool IsSortAscending => _sortAscending;
@@ -142,21 +230,13 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void PreviousPage()
     {
-        if (CurrentPage > 1)
-        {
-            CurrentPage--;
-            ApplyFilter();
-        }
+        if (CurrentPage > 1) { CurrentPage--; ApplyFilter(); }
     }
 
     [RelayCommand]
     private void NextPage()
     {
-        if (CurrentPage < TotalPages)
-        {
-            CurrentPage++;
-            ApplyFilter();
-        }
+        if (CurrentPage < TotalPages) { CurrentPage++; ApplyFilter(); }
     }
 
     public void DeleteTodo(TodoItemViewModel todo)
@@ -202,19 +282,18 @@ public partial class MainViewModel : ObservableObject
             ws.Cell(i + 2, 2).Value = item.Text;
             ws.Cell(i + 2, 3).Value = item.Status switch
             {
-                TodoStatus.Creado => "Creado",
+                TodoStatus.Creado      => "Creado",
                 TodoStatus.EnEjecucion => "En ejecución",
-                TodoStatus.Terminado => "Terminado",
-                _ => item.Status.ToString()
+                TodoStatus.Terminado   => "Terminado",
+                _                      => item.Status.ToString()
             };
 
-            var statusCell = ws.Cell(i + 2, 3);
-            statusCell.Style.Fill.BackgroundColor = item.Status switch
+            ws.Cell(i + 2, 3).Style.Fill.BackgroundColor = item.Status switch
             {
-                TodoStatus.Creado => XLColor.FromHtml("#F8D7DA"),
+                TodoStatus.Creado      => XLColor.FromHtml("#F8D7DA"),
                 TodoStatus.EnEjecucion => XLColor.FromHtml("#FFF3CD"),
-                TodoStatus.Terminado => XLColor.FromHtml("#D4EDDA"),
-                _ => XLColor.White
+                TodoStatus.Terminado   => XLColor.FromHtml("#D4EDDA"),
+                _                      => XLColor.White
             };
         }
 

@@ -73,6 +73,42 @@ public partial class TodoListView : UserControl
             ViewModel.SortByCommand.Execute(columnPath);
     }
 
+    private void OnLeftGridSorting(object? sender, DataGridColumnEventArgs e)
+    {
+        e.Handled = true;
+        if (e.Column.SortMemberPath is { } col)
+            ViewModel.SortSplitGrid(isLeft: true, col);
+    }
+
+    private void OnRightGridSorting(object? sender, DataGridColumnEventArgs e)
+    {
+        e.Handled = true;
+        if (e.Column.SortMemberPath is { } col)
+            ViewModel.SortSplitGrid(isLeft: false, col);
+    }
+
+    private bool _isSyncing;
+
+    private void OnLeftGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_isSyncing) return;
+        _isSyncing = true;
+        RightGrid.SelectedItem = LeftGrid.SelectedItem;
+        if (RightGrid.SelectedItem != null)
+            RightGrid.ScrollIntoView(RightGrid.SelectedItem, null);
+        _isSyncing = false;
+    }
+
+    private void OnRightGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_isSyncing) return;
+        _isSyncing = true;
+        LeftGrid.SelectedItem = RightGrid.SelectedItem;
+        if (LeftGrid.SelectedItem != null)
+            LeftGrid.ScrollIntoView(LeftGrid.SelectedItem, null);
+        _isSyncing = false;
+    }
+
     private async void OnExport(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);
