@@ -136,6 +136,9 @@ public partial class MainViewModel : ObservableObject
     public string TextHeader => "Descripción" + GetSortIndicator("Text");
     public string StatusHeader => "Estado" + GetSortIndicator("Status");
 
+    public string CurrentSortColumn => _sortColumn;
+    public bool IsSortAscending => _sortAscending;
+
     [RelayCommand]
     private void PreviousPage()
     {

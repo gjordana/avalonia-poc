@@ -65,6 +65,14 @@ public partial class TodoListView : UserControl
         }
     }
 
+    private void OnGridSorting(object? sender, DataGridColumnEventArgs e)
+    {
+        e.Handled = true;
+        var columnPath = e.Column.SortMemberPath;
+        if (columnPath != null)
+            ViewModel.SortByCommand.Execute(columnPath);
+    }
+
     private async void OnExport(object? sender, RoutedEventArgs e)
     {
         var topLevel = TopLevel.GetTopLevel(this);

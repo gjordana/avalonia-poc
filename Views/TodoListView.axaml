@@ -5,7 +5,7 @@
              x:DataType="vm:MainViewModel"
              Background="{DynamicResource AppBackground}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" Margin="24,20">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24,20">
 
         <!-- Alert Banner -->
         <Border Grid.Row="0"
@@ -75,83 +75,106 @@
                      Padding="8,6"/>
         </Grid>
 
-        <!-- Table Header (sortable) -->
-        <Border Grid.Row="3" BorderBrush="{DynamicResource BorderMedium}" BorderThickness="0,0,0,2" Padding="0">
-            <Grid ColumnDefinitions="2*,2*,*,100">
-                <Button Grid.Column="0" Classes="btn-header"
-                        Command="{Binding SortByCommand}" CommandParameter="Title">
-                    <TextBlock Text="{Binding TitleHeader}" FontWeight="Bold" FontSize="14"
-                               Foreground="{DynamicResource TextPrimary}"/>
-                </Button>
-                <Button Grid.Column="1" Classes="btn-header"
-                        Command="{Binding SortByCommand}" CommandParameter="Text">
-                    <TextBlock Text="{Binding TextHeader}" FontWeight="Bold" FontSize="14"
-                               Foreground="{DynamicResource TextPrimary}"/>
-                </Button>
-                <Button Grid.Column="2" Classes="btn-header"
-                        Command="{Binding SortByCommand}" CommandParameter="Status">
-                    <TextBlock Text="{Binding StatusHeader}" FontWeight="Bold" FontSize="14"
-                               Foreground="{DynamicResource TextPrimary}"/>
-                </Button>
-                <TextBlock Grid.Column="3" Text="" FontSize="14"/>
-            </Grid>
-        </Border>
-
-        <!-- Table Rows -->
-        <ScrollViewer Grid.Row="4">
-            <ItemsControl ItemsSource="{Binding Todos}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:TodoItemViewModel">
-                        <Border BorderBrush="{DynamicResource BorderLight}" BorderThickness="0,0,0,1" Padding="12,10">
-                            <Grid ColumnDefinitions="2*,2*,*,100">
-                                <TextBlock Grid.Column="0" Text="{Binding Title}"
-                                           FontSize="14" Foreground="{DynamicResource TextPrimary}"
-                                           VerticalAlignment="Center"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Grid.Column="1" Text="{Binding Text}"
-                                           FontSize="14" Foreground="{DynamicResource TextMuted}"
-                                           VerticalAlignment="Center"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <!-- Status Pill -->
-                                <Border Grid.Column="2"
-                                        CornerRadius="12"
-                                        Padding="12,4"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Background="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusBackgroundConverter}}"
-                                        BorderBrush="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusBorderConverter}}"
-                                        BorderThickness="1">
-                                    <TextBlock Text="{Binding StatusDisplay}"
-                                               FontSize="12" FontWeight="SemiBold"
-                                               Foreground="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusForegroundConverter}}"/>
-                                </Border>
-                                <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Center">
-                                    <Button Click="OnEdit" Tag="{Binding}"
-                                            Classes="btn-warning"
-                                            ToolTip.Tip="Editar tarea"
-                                            Padding="10,6">
-                                        <TextBlock Text="&#xf044;" FontFamily="{StaticResource FontAwesome}"
-                                                   FontSize="14" Foreground="White"/>
-                                    </Button>
-                                    <Button Click="OnDelete" Tag="{Binding}"
-                                            Classes="btn-danger"
-                                            ToolTip.Tip="Eliminar tarea"
-                                            Padding="10,6">
-                                        <TextBlock Text="&#xf2ed;" FontFamily="{StaticResource FontAwesome}"
-                                                   FontSize="14" Foreground="White"/>
-                                    </Button>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <!-- Data Grid -->
+        <DataGrid Grid.Row="3"
+                  x:Name="TodoGrid"
+                  ItemsSource="{Binding Todos}"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  CanUserReorderColumns="False"
+                  GridLinesVisibility="All"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  FontSize="14"
+                  Sorting="OnGridSorting">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn SortMemberPath="Title" Width="2*">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock x:CompileBindings="False"
+                                       Text="{Binding DataContext.TitleHeader, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:TodoItemViewModel">
+                            <TextBlock Text="{Binding Title}"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"
+                                       Margin="12,0"
+                                       ToolTip.Tip="{Binding Id, StringFormat='Registro: {0}'}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding Text}"
+                                    SortMemberPath="Text"
+                                    Width="2*">
+                    <DataGridTextColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock x:CompileBindings="False"
+                                       Text="{Binding DataContext.TextHeader, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTextColumn.HeaderTemplate>
+                </DataGridTextColumn>
+                <DataGridTemplateColumn SortMemberPath="Status" Width="*">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock x:CompileBindings="False"
+                                       Text="{Binding DataContext.StatusHeader, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       FontWeight="Bold" FontSize="14"
+                                       VerticalAlignment="Center"
+                                       ToolTip.Tip="Estado de la tarea:&#10;• Creado — tarea pendiente de iniciar&#10;• En Ejecución — tarea en progreso&#10;• Terminado — tarea completada"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:TodoItemViewModel">
+                            <Border CornerRadius="12" Padding="12,4"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    Margin="4,2"
+                                    Background="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusBackgroundConverter}}"
+                                    BorderBrush="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusBorderConverter}}"
+                                    BorderThickness="1">
+                                <TextBlock Text="{Binding StatusDisplay}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{Binding Status, Converter={x:Static vm:TodoItemViewModel.StatusForegroundConverter}}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="110" CanUserSort="False" CanUserResize="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:TodoItemViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="6"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Margin="4,0">
+                                <Button Click="OnEdit" Tag="{Binding}"
+                                        Classes="btn-warning"
+                                        ToolTip.Tip="Editar tarea"
+                                        Padding="10,6">
+                                    <TextBlock Text="&#xf044;" FontFamily="{StaticResource FontAwesome}"
+                                               FontSize="14" Foreground="White"/>
+                                </Button>
+                                <Button Click="OnDelete" Tag="{Binding}"
+                                        Classes="btn-danger"
+                                        ToolTip.Tip="Eliminar tarea"
+                                        Padding="10,6">
+                                    <TextBlock Text="&#xf2ed;" FontFamily="{StaticResource FontAwesome}"
+                                               FontSize="14" Foreground="White"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
         <!-- Footer: Pagination -->
-        <Grid Grid.Row="5" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
             <TextBlock Text="{Binding PageInfo}" VerticalAlignment="Center" Grid.Column="0"
                        Foreground="{DynamicResource TextFooter}" FontSize="13"/>
             <StackPanel Orientation="Horizontal" Spacing="8" Grid.Column="1">
